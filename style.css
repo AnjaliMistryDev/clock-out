@@ -1,0 +1,89 @@
+:root{
+  --bg:#EEF2F6; --panel:#FFFFFF; --field:#F4F7FA; --ink:#172230; --muted:#5B6B7C; --line:#D5DEE6;
+  --seg:#E3E9EF; --segOn:#FFFFFF;
+  --blue:#DCE8FB; --blueInk:#1D4ED8; --red:#FBE1E1; --redInk:#DC2626; --green:#D9F3E7; --greenInk:#059669; --amber:#FDEFD3; --amberInk:#B45309;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0A0B; --panel:#0E0E10; --field:#0A0A0B; --ink:#F2F4F7; --muted:#9AA3AE; --line:#26282C;
+    --seg:#1C1D20; --segOn:#F2F4F7;
+    --blue:#172338; --blueInk:#F2F4F7; --red:#361718; --redInk:#EF4444; --green:#0F2E22; --greenInk:#10B981; --amber:#33260F; --amberInk:#F59E0B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0A0B; --panel:#0E0E10; --field:#0A0A0B; --ink:#F2F4F7; --muted:#9AA3AE; --line:#26282C;
+  --seg:#1C1D20; --segOn:#F2F4F7;
+  --blue:#172338; --blueInk:#F2F4F7; --red:#361718; --redInk:#EF4444; --green:#0F2E22; --greenInk:#10B981; --amber:#33260F; --amberInk:#F59E0B;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-variant-numeric:tabular-nums;line-height:1.5}
+.wrap{max-width:1160px;margin:0 auto;padding:32px 20px 40px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:32px}
+h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;margin:0;letter-spacing:-.02em;line-height:1.1}
+header p{margin:8px 0 0;color:var(--muted);font-size:1.05rem}
+.theme{width:40px;height:40px;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;cursor:pointer}
+.theme svg{width:18px;height:18px}
+button:focus-visible,textarea:focus-visible,.seg input:focus-visible+label{outline:3px solid var(--greenInk);outline-offset:2px}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px}
+h2{font-size:1.4rem;font-weight:800;margin:0;letter-spacing:-.015em}
+.top{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:32px;margin-bottom:32px}
+@media (max-width:860px){.top{grid-template-columns:1fr}}
+
+.field-label{font-weight:600;font-size:.95rem;margin:24px 0 8px;display:block}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--seg);border-radius:8px;padding:4px;gap:4px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{text-align:center;padding:7px 6px;border-radius:6px;cursor:pointer;font-size:.9rem;color:var(--muted)}
+.seg input:checked+label{background:var(--segOn);color:var(--bg);font-weight:600}
+textarea{width:100%;min-height:180px;resize:vertical;border:1px solid var(--line);border-radius:8px;
+  background:var(--field);color:var(--ink);padding:14px;font-family:ui-monospace,Consolas,monospace;font-size:.9rem;line-height:1.8}
+.row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--seg);color:var(--ink);border-radius:8px;padding:8px 14px;font:inherit;font-size:.88rem;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--greenInk);border-color:var(--greenInk);color:#fff}
+.err{color:var(--redInk);font-size:.85rem;margin-top:8px;min-height:1.2em}
+
+/* Unique piece: the Day Sky — sun travels with your progress */
+.mood{display:flex;flex-direction:column}
+.caption{font-family:"Mukta","Noto Sans Devanagari",system-ui,sans-serif;font-size:clamp(1.3rem,2.4vw,1.65rem);font-weight:800;line-height:1.3;margin:0 0 4px;min-height:2.6em}
+.subcap{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+.sky{border-radius:10px;overflow:hidden;border:1px solid var(--line);flex:1;min-height:0;aspect-ratio:8/5;display:flex;background:#1E3A5F}
+.sky svg{flex:1}
+.sky svg{width:100%;height:100%;display:block}
+.sky .tr{transition:all 1.2s ease}
+@media (prefers-reduced-motion:reduce){.sky .tr{transition:none}}
+
+#walker{transition:opacity .8s ease}
+.limb{transform-box:fill-box;transform-origin:0 0}
+.tw{animation:tw 2.8s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:1}to{opacity:.25}}
+.cloud{opacity:.8}
+.c1{animation:drift 70s linear infinite}
+.c2{animation:drift 95s linear infinite;animation-delay:-40s}
+@keyframes drift{from{transform:translate(-40px,58px)}to{transform:translate(440px,58px)}}
+.c2{animation-name:drift2}
+@keyframes drift2{from{transform:translate(-30px,92px) scale(.9)}to{transform:translate(430px,92px) scale(.9)}}
+#sun,#moon,#stars,#clouds,.lampGlow,#homeGlow{transition:opacity 1.2s ease}
+#windows rect{transition:fill 1.2s ease,opacity 1.2s ease}
+@media (prefers-reduced-motion:reduce){.tw,.cloud{animation:none}}
+#walker.walking .legF,#walker.walking .armB{animation:swing .55s ease-in-out infinite alternate}
+#walker.walking .legB,#walker.walking .armF{animation:swing .55s ease-in-out infinite alternate-reverse}
+#walker.walking .bob{animation:bob .275s ease-in-out infinite alternate}
+@keyframes swing{from{transform:rotate(28deg)}to{transform:rotate(-28deg)}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-1.6px)}}
+@media (prefers-reduced-motion:reduce){#walker.walking *{animation:none!important}}
+.sub{margin:6px 0 20px;font-weight:700;font-size:.95rem;min-height:1.4em}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media (max-width:1000px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.cards{grid-template-columns:1fr}}
+.card{display:flex;align-items:center;gap:14px;border-radius:8px;padding:18px 16px;min-width:0}
+.card.b{background:var(--blue)} .card.r{background:var(--red)} .card.g{background:var(--green)} .card.y{background:var(--amber)}
+.card svg{width:30px;height:30px;flex:none}
+.card.b svg{color:var(--blueInk)} .card.r svg{color:var(--redInk)} .card.g svg{color:var(--greenInk)} .card.y svg{color:var(--amberInk)}
+.card span{display:block;color:var(--muted);font-size:.85rem}
+.card strong{white-space:nowrap;font-size:clamp(1.15rem,1.9vw,1.5rem);font-weight:800;letter-spacing:-.01em;line-height:1.25}
+footer{margin-top:28px;color:var(--muted);font-size:.85rem;text-align:center}

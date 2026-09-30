@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clock Out — Workday Exit Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Mukta:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Clock Out</h1>
+      <p>Calculate your workday and find out when you can head home.</p>
+    </div>
+    <button class="theme" id="themeBtn" type="button" aria-label="Toggle theme"></button>
+  </header>
+
+  <div class="top">
+    <section class="panel" aria-label="Workday calculator">
+      <h2>Workday Calculator</h2>
+      <span class="field-label">Working Day Type</span>
+      <div class="seg" role="radiogroup" aria-label="Working day type">
+        <input type="radio" name="dt" id="dt1" value="8.5" checked><label for="dt1">Full Day (8.5 hrs)</label>
+        <input type="radio" name="dt" id="dt2" value="4.5"><label for="dt2">Half Day (4.5 hrs)</label>
+        <input type="radio" name="dt" id="dt3" value="7.5"><label for="dt3">Movement (7.5 hrs)</label>
+      </div>
+      <label class="field-label" for="entries">Time Entries (e.g., 09:30:00 or 9:30:00 AM)</label>
+      <textarea id="entries" spellcheck="false" placeholder="9:30:00 AM&#10;1:15:00 PM&#10;1:50:00 PM"></textarea>
+      <div class="row">
+        <button class="btn primary" id="punchBtn" type="button">Add current time</button>
+        <button class="btn" id="clearBtn" type="button">Clear</button>
+      </div>
+      <div class="err" id="err" role="status"></div>
+    </section>
+
+    <section class="panel mood" aria-live="polite">
+      <p class="caption" id="caption">पहले पंच तो करो, फिर बात करेंगे।</p>
+      <p class="subcap" id="subcap">The sun moves with your workday.</p>
+      <div class="sky">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Scene showing how far through the workday you are">
+          <defs>
+            <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+              <stop id="skyTop" offset="0" stop-color="#1E3A5F"/>
+              <stop id="skyBot" offset="1" stop-color="#7AA7D9"/>
+            </linearGradient>
+            <radialGradient id="sunGlow"><stop offset="0" stop-color="#FFE8A3" stop-opacity=".9"/><stop offset=".35" stop-color="#FDB813" stop-opacity=".35"/><stop offset="1" stop-color="#FDB813" stop-opacity="0"/></radialGradient>
+            <radialGradient id="sunCore" cx=".4" cy=".4"><stop offset="0" stop-color="#FFFBEA"/><stop offset=".6" stop-color="#FFD54A"/><stop offset="1" stop-color="#F59E0B"/></radialGradient>
+            <radialGradient id="moonGlow"><stop offset="0" stop-color="#DDE6F5" stop-opacity=".45"/><stop offset="1" stop-color="#DDE6F5" stop-opacity="0"/></radialGradient>
+            <radialGradient id="warm"><stop offset="0" stop-color="#FFD58A" stop-opacity=".75"/><stop offset="1" stop-color="#FFB547" stop-opacity="0"/></radialGradient>
+            <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B2029"/><stop offset="1" stop-color="#0C0F14"/></linearGradient>
+            <linearGradient id="tower" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2A3342"/><stop offset="1" stop-color="#1A212C"/></linearGradient>
+            <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" id="hazeC" stop-color="#FFB27A" stop-opacity=".35"/></linearGradient>
+          </defs>
+          <rect width="400" height="250" fill="url(#skyG)"/>
+          <rect y="120" width="400" height="90" fill="url(#haze)"/>
+          <g id="stars" opacity="0" fill="#fff"><circle class="tw" style="animation-delay:1.40s" cx="237" cy="54" r="1.2"/><circle class="tw" style="animation-delay:0.75s" cx="97" cy="97" r="0.9"/><circle class="tw" style="animation-delay:0.25s" cx="158" cy="75" r="1.5"/><circle class="tw" style="animation-delay:2.63s" cx="378" cy="65" r="1.2"/><circle class="tw" style="animation-delay:1.83s" cx="42" cy="23" r="1.5"/><circle class="tw" style="animation-delay:0.49s" cx="180" cy="27" r="1.5"/><circle class="tw" style="animation-delay:1.27s" cx="347" cy="17" r="1.2"/><circle class="tw" style="animation-delay:1.02s" cx="184" cy="84" r="1.5"/><circle class="tw" style="animation-delay:1.74s" cx="238" cy="16" r="0.7"/><circle class="tw" style="animation-delay:2.83s" cx="247" cy="97" r="0.7"/><circle class="tw" style="animation-delay:0.18s" cx="364" cy="47" r="1.5"/><circle class="tw" style="animation-delay:0.85s" cx="202" cy="93" r="1.2"/><circle class="tw" style="animation-delay:0.07s" cx="241" cy="53" r="0.9"/><circle class="tw" style="animation-delay:1.83s" cx="257" cy="15" r="0.9"/><circle class="tw" style="animation-delay:2.30s" cx="71" cy="102" r="0.9"/><circle class="tw" style="animation-delay:1.19s" cx="259" cy="18" r="0.9"/><circle class="tw" style="animation-delay:1.35s" cx="286" cy="43" r="0.9"/><circle class="tw" style="animation-delay:2.46s" cx="286" cy="43" r="1.5"/><circle class="tw" style="animation-delay:2.96s" cx="354" cy="56" r="0.9"/><circle class="tw" style="animation-delay:0.45s" cx="95" cy="27" r="0.9"/><circle class="tw" style="animation-delay:1.98s" cx="11" cy="70" r="0.9"/><circle class="tw" style="animation-delay:0.79s" cx="7" cy="26" r="1.5"/><circle class="tw" style="animation-delay:1.60s" cx="317" cy="80" r="1.2"/><circle class="tw" style="animation-delay:2.86s" cx="358" cy="117" r="0.7"/><circle class="tw" style="animation-delay:1.37s" cx="353" cy="110" r="1.5"/><circle class="tw" style="animation-delay:1.19s" cx="206" cy="21" r="1.5"/><circle class="tw" style="animation-delay:1.90s" cx="36" cy="32" r="0.7"/><circle class="tw" style="animation-delay:2.95s" cx="230" cy="28" r="0.7"/><circle class="tw" style="animation-delay:1.02s" cx="31" cy="21" r="0.7"/><circle class="tw" style="animation-delay:1.70s" cx="279" cy="20" r="1.2"/><circle class="tw" style="animation-delay:1.84s" cx="41" cy="119" r="0.9"/><circle class="tw" style="animation-delay:1.84s" cx="81" cy="89" r="1.2"/><circle class="tw" style="animation-delay:2.87s" cx="313" cy="54" r="1.5"/><circle class="tw" style="animation-delay:0.37s" cx="254" cy="67" r="1.5"/></g>
+
+          <g id="sun" transform="translate(30 200)">
+            <circle r="46" fill="url(#sunGlow)"/><circle r="15" fill="url(#sunCore)"/>
+          </g>
+          <g id="moon" opacity="0" transform="translate(335 52)">
+            <circle r="34" fill="url(#moonGlow)"/>
+            <circle r="13" fill="#E9EEF7"/>
+            <circle cx="-4" cy="-3" r="2.4" fill="#C9D3E3"/><circle cx="4" cy="4" r="1.7" fill="#C9D3E3"/><circle cx="3" cy="-6" r="1.1" fill="#C9D3E3"/>
+          </g>
+
+          <g id="clouds" fill="#fff">
+            <g class="cloud c1"><ellipse cx="0" cy="0" rx="22" ry="7"/><ellipse cx="-8" cy="-5" rx="11" ry="8"/><ellipse cx="7" cy="-6" rx="9" ry="7"/></g>
+            <g class="cloud c2"><ellipse cx="0" cy="0" rx="16" ry="5"/><ellipse cx="-5" cy="-4" rx="8" ry="6"/><ellipse cx="5" cy="-4" rx="7" ry="5"/></g>
+          </g>
+
+          <g fill="#0B1020" opacity=".28"><rect x="0" y="166" width="24" height="39"/><rect x="27" y="171" width="15" height="34"/><rect x="46" y="152" width="17" height="53"/><rect x="67" y="143" width="15" height="62"/><rect x="83" y="170" width="15" height="35"/><rect x="101" y="171" width="27" height="34"/><rect x="129" y="140" width="16" height="65"/><rect x="148" y="123" width="15" height="82"/><rect x="167" y="161" width="17" height="44"/><rect x="188" y="139" width="15" height="66"/><rect x="207" y="172" width="26" height="33"/><rect x="234" y="140" width="15" height="65"/><rect x="250" y="149" width="23" height="56"/><rect x="274" y="139" width="17" height="66"/><rect x="293" y="169" width="19" height="36"/><rect x="316" y="152" width="20" height="53"/><rect x="336" y="139" width="16" height="66"/><rect x="352" y="144" width="20" height="61"/><rect x="376" y="126" width="27" height="79"/></g>
+          <path d="M0 205 Q60 168 130 190 T260 182 T400 176 V205 Z" fill="#0E1520" opacity=".55"/>
+
+          <!-- office tower -->
+          <g transform="translate(20 70)">
+            <rect x="-3" y="-8" width="80" height="8" fill="#232B37"/>
+            <rect x="30" y="-22" width="3" height="14" fill="#3A4455"/><circle id="beacon" cx="31.5" cy="-23" r="2" fill="#EF4444"/>
+            <rect width="74" height="135" fill="url(#tower)"/>
+            <g id="windows"><rect x="12" y="14" width="8" height="9" rx="1"/><rect x="25" y="14" width="8" height="9" rx="1"/><rect x="38" y="14" width="8" height="9" rx="1"/><rect x="51" y="14" width="8" height="9" rx="1"/><rect x="64" y="14" width="8" height="9" rx="1"/><rect x="12" y="28" width="8" height="9" rx="1"/><rect x="25" y="28" width="8" height="9" rx="1"/><rect x="38" y="28" width="8" height="9" rx="1"/><rect x="51" y="28" width="8" height="9" rx="1"/><rect x="64" y="28" width="8" height="9" rx="1"/><rect x="12" y="42" width="8" height="9" rx="1"/><rect x="25" y="42" width="8" height="9" rx="1"/><rect x="38" y="42" width="8" height="9" rx="1"/><rect x="51" y="42" width="8" height="9" rx="1"/><rect x="64" y="42" width="8" height="9" rx="1"/><rect x="12" y="56" width="8" height="9" rx="1"/><rect x="25" y="56" width="8" height="9" rx="1"/><rect x="38" y="56" width="8" height="9" rx="1"/><rect x="51" y="56" width="8" height="9" rx="1"/><rect x="64" y="56" width="8" height="9" rx="1"/><rect x="12" y="70" width="8" height="9" rx="1"/><rect x="25" y="70" width="8" height="9" rx="1"/><rect x="38" y="70" width="8" height="9" rx="1"/><rect x="51" y="70" width="8" height="9" rx="1"/><rect x="64" y="70" width="8" height="9" rx="1"/><rect x="12" y="84" width="8" height="9" rx="1"/><rect x="25" y="84" width="8" height="9" rx="1"/><rect x="38" y="84" width="8" height="9" rx="1"/><rect x="51" y="84" width="8" height="9" rx="1"/><rect x="64" y="84" width="8" height="9" rx="1"/><rect x="12" y="98" width="8" height="9" rx="1"/><rect x="25" y="98" width="8" height="9" rx="1"/><rect x="38" y="98" width="8" height="9" rx="1"/><rect x="51" y="98" width="8" height="9" rx="1"/><rect x="64" y="98" width="8" height="9" rx="1"/><rect x="12" y="112" width="8" height="9" rx="1"/><rect x="25" y="112" width="8" height="9" rx="1"/><rect x="38" y="112" width="8" height="9" rx="1"/><rect x="51" y="112" width="8" height="9" rx="1"/><rect x="64" y="112" width="8" height="9" rx="1"/><rect x="12" y="126" width="8" height="9" rx="1"/><rect x="25" y="126" width="8" height="9" rx="1"/><rect x="38" y="126" width="8" height="9" rx="1"/><rect x="51" y="126" width="8" height="9" rx="1"/><rect x="64" y="126" width="8" height="9" rx="1"/></g>
+            <rect x="26" y="113" width="22" height="22" fill="#0B0E12"/>
+            <rect x="22" y="109" width="30" height="4" fill="#3A4455"/>
+          </g>
+
+          <!-- road + pavement -->
+          <rect y="205" width="400" height="45" fill="url(#road)"/>
+          <rect y="205" width="400" height="3" fill="#2B323D"/>
+          <line x1="0" y1="226" x2="400" y2="226" stroke="#3B4351" stroke-width="1.6" stroke-dasharray="10 10"/>
+
+          <!-- street lamps -->
+          <g id="lamps">
+            <g transform="translate(160 205)"><circle class="lampGlow" cy="-44" r="26" fill="url(#warm)" opacity="0"/><rect x="-1" y="-44" width="2" height="44" fill="#3A4455"/><path d="M0 -44 h7" stroke="#3A4455" stroke-width="2"/><rect class="bulb" x="5" y="-45" width="5" height="3" rx="1" fill="#4B5563"/></g>
+            <g transform="translate(250 205)"><circle class="lampGlow" cy="-44" r="26" fill="url(#warm)" opacity="0"/><rect x="-1" y="-44" width="2" height="44" fill="#3A4455"/><path d="M0 -44 h7" stroke="#3A4455" stroke-width="2"/><rect class="bulb" x="5" y="-45" width="5" height="3" rx="1" fill="#4B5563"/></g>
+          </g>
+
+          <!-- trees -->
+          <g fill="#14261E"><rect x="287" y="186" width="3" height="19" fill="#2A1F17"/><circle cx="288.5" cy="180" r="11"/><circle cx="283" cy="186" r="7"/><circle cx="294" cy="185" r="7"/>
+          <rect x="377" y="190" width="3" height="15" fill="#2A1F17"/><circle cx="378.5" cy="184" r="9"/></g>
+
+          <!-- home -->
+          <g transform="translate(308 158)">
+            <circle id="homeGlow" cx="30" cy="30" r="40" fill="url(#warm)" opacity="0"/>
+            <rect x="40" y="-2" width="7" height="14" fill="#3B2A22"/>
+            <path d="M-4 20 L30 -6 L64 20 Z" fill="#8A3A1C"/>
+            <path d="M-4 20 L30 -6 L64 20" fill="none" stroke="#5E2410" stroke-width="2"/>
+            <rect x="2" y="20" width="56" height="27" fill="#2E343D"/>
+            <rect id="homeWin" x="8" y="26" width="14" height="11" rx="1" fill="#3A4150"/>
+            <path d="M15 26 v11 M8 31.5 h14" stroke="#2E343D" stroke-width="1.2"/>
+            <rect x="26" y="27" width="11" height="20" rx="1" fill="#141920"/>
+            <rect id="homeWin2" x="42" y="26" width="11" height="11" rx="1" fill="#3A4150"/>
+          </g>
+
+          <!-- walker -->
+          <g id="walker" transform="translate(57 205) scale(1.15)">
+            <g class="bob">
+              <g class="limb legB"><path d="M0 -15 L0 -1" stroke="#334155" stroke-width="3.4" stroke-linecap="round"/><path d="M-0.5 0 h3.6" stroke="#0F172A" stroke-width="2.4" stroke-linecap="round"/></g>
+              <g class="limb armB"><path d="M0 -29 L0 -19" stroke="#CBD5E1" stroke-width="2.6" stroke-linecap="round"/></g>
+              <rect x="-8.5" y="-30" width="5.5" height="11" rx="2" fill="#059669"/>
+              <rect x="-4.2" y="-31" width="8.4" height="17" rx="3.5" fill="#F1F5F9"/>
+              <circle cx="0" cy="-36" r="4.6" fill="#E0B089"/>
+              <path d="M-4.6 -36.5 a4.6 4.6 0 0 1 9.2 -0.5 q-3 -2.4 -9.2 0.5z" fill="#1F2937"/>
+              <g class="limb legF"><path d="M0 -15 L0 -1" stroke="#475569" stroke-width="3.4" stroke-linecap="round"/><path d="M-0.5 0 h3.6" stroke="#0F172A" stroke-width="2.4" stroke-linecap="round"/></g>
+              <g class="limb armF"><path d="M0 -29 L0 -19" stroke="#F8FAFC" stroke-width="2.6" stroke-linecap="round"/><circle cx="0" cy="-18.5" r="1.4" fill="#E0B089"/></g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" aria-live="polite">
+    <h2>Your Daily Summary</h2>
+    <p class="sub" id="sub"></p>
+    <div class="cards">
+      <div class="card b">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <div><span>Total Time Worked</span><strong id="sumWorked">00h 00m 00s</strong></div>
+      </div>
+      <div class="card r">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="14" r="8"/><path d="M12 14v-4M10 2h4M12 2v4"/></svg>
+        <div><span id="leftLabel">Remaining Time</span><strong id="sumLeft">--h --m --s</strong></div>
+      </div>
+      <div class="card y">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 0 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+        <div><span id="breakLabel">Break Time</span><strong id="sumBreak">00h 00m 00s</strong></div>
+      </div>
+      <div class="card g">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <div><span id="exitLabel">Estimated Departure</span><strong id="sumExit">--:--:--</strong></div>
+      </div>
+    </div>
+  </section>
+  <footer>Your times stay in this browser. Nothing is sent anywhere.</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const ta = $('entries');
+  const store = {
+    get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+    set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  };
+  const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  function isDark(){ const t=document.documentElement.getAttribute('data-theme'); return t ? t==='dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+  function applyTheme(t){ if(t) document.documentElement.setAttribute('data-theme',t); $('themeBtn').innerHTML = isDark()?SUN:MOON; }
+  applyTheme(store.get('co-theme'));
+  $('themeBtn').onclick=()=>{ const n=isDark()?'light':'dark'; store.set('co-theme',n); applyTheme(n); };
+
+  function parseTime(str){
+    const m = str.trim().toUpperCase().match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?$/);
+    if(!m) return null;
+    let h=+m[1], mi=+m[2], se=+(m[3]||0);
+    if(mi>59||se>59) return null;
+    if(m[4]){ if(h<1||h>12) return null; if(m[4]==='PM'&&h!==12) h+=12; if(m[4]==='AM'&&h===12) h=0; }
+    else if(h>23) return null;
+    const d=new Date(); d.setHours(h,mi,se,0); return d;
+  }
+  const hms = ms => { const t=Math.max(0,Math.floor(ms/1000)); return String(Math.floor(t/3600)).padStart(2,'0')+'h '+String(Math.floor(t%3600/60)).padStart(2,'0')+'m '+String(t%60).padStart(2,'0')+'s'; };
+  const clk = d => { let h=d.getHours(); const ap=h>=12?'PM':'AM'; h=h%12||12; return String(h).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+' '+ap; };
+
+  function compute(){
+    const lines = ta.value.split('\n').map(l=>l.trim()).filter(Boolean);
+    const now=new Date(), times=[], bad=[];
+    lines.forEach((l,i)=>{ if(l.toUpperCase()==='MISSING'){ if(i!==lines.length-1) bad.push(l); return; } const d=parseTime(l); d?times.push(d):bad.push(l); });
+    for(let i=1;i<times.length;i++) if(times[i]<times[i-1]) return {error:'Times must be in order: '+clk(times[i])+' comes before the time above it.'};
+    const sessions=[]; let worked=0, breaks=0;
+    for(let i=0;i<times.length;i+=2){
+      const inT=times[i], outT=times[i+1]||null, dur=Math.max(0,(outT||now)-inT);
+      worked+=dur; sessions.push({inT,outT,dur}); if(i>0) breaks+=inT-times[i-1];
+    }
+    return {times,sessions,worked,breaks,clockedIn:times.length%2===1,now,bad};
+  }
+  function crossTime(r,req){ let a=0; for(const s of r.sessions){ if(a+s.dur>=req) return new Date(s.inT.getTime()+(req-a)); a+=s.dur; } return null; }
+
+  // --- Day sky ---
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function mix(c1,c2,t){ const p=c=>[1,3,5].map(i=>parseInt(c.substr(i,2),16)); const a=p(c1),b=p(c2); return '#'+a.map((v,i)=>Math.round(lerp(v,b[i],t)).toString(16).padStart(2,'0')).join(''); }
+  const stops=[ // pct, top, bottom
+    [0,'#1E3A5F','#E9A96B'],[20,'#2F6FB3','#9CC8EE'],[55,'#1F6FC5','#8EC5F2'],
+    [85,'#3B3F7A','#F08A4B'],[100,'#1B1F46','#D9614A'],[130,'#0B1026','#1A2238']];
+  function skyAt(p){
+    p=Math.min(130,p);
+    for(let i=1;i<stops.length;i++) if(p<=stops[i][0]){ const a=stops[i-1],b=stops[i],t=(p-a[0])/(b[0]-a[0]); return [mix(a[1],b[1],t),mix(a[2],b[2],t)]; }
+    return [stops[5][1],stops[5][2]];
+  }
+  // --- walker: really walks between office, tea break and home ---
+  const DOOR=57, HOME=342, SPEED=34; // units per second
+  let wx=DOOR, wTarget=DOOR, wLast=0, wRunning=false;
+  const W=()=>$('walker');
+  function walkTo(target, hidden){
+    wTarget=target;
+    if(hidden){ W().style.opacity=0; wx=DOOR; placeWalker(); return; }
+    if(!wRunning && Math.abs(wTarget-wx)>0.5){ wRunning=true; wLast=performance.now(); W().style.opacity=1; requestAnimationFrame(step); }
+    if(!wRunning) W().style.opacity = (wx>=HOME-0.5) ? 0 : 1;
+  }
+  function placeWalker(){
+    const dir = wTarget<wx ? -1 : 1;
+    W().setAttribute('transform','translate('+wx.toFixed(1)+' 205) scale('+(1.15*dir)+' 1.15)');
+  }
+  function step(now){
+    const dt=Math.min(.1,(now-wLast)/1000); wLast=now;
+    const d=wTarget-wx, move=SPEED*dt*(matchMedia('(prefers-reduced-motion: reduce)').matches?100:1);
+    if(Math.abs(d)<=move){ wx=wTarget; W().classList.remove('walking'); placeWalker(); wRunning=false;
+      if(wx>=HOME-0.5) W().style.opacity=0; // stepped inside home
+      return; }
+    wx+=Math.sign(d)*move; W().classList.add('walking'); placeWalker();
+    requestAnimationFrame(step);
+  }
+
+  function paintSky(pct, state){
+    const [top,bot]=skyAt(pct);
+    $('skyTop').setAttribute('stop-color',top); document.querySelector('.sky').style.backgroundColor=top; $('skyBot').setAttribute('stop-color',bot);
+    const p=Math.min(1,pct/100), ang=Math.PI*(1-p);
+    const sx=200+170*Math.cos(ang), sy=200-170*Math.sin(ang)*0.82;
+    $('sun').setAttribute('transform','translate('+sx.toFixed(1)+' '+sy.toFixed(1)+')');
+    $('sun').setAttribute('opacity', pct>=100?0:1);
+    const night=Math.min(1,Math.max(0,(pct-100)/15));
+    const dusk=Math.min(1,Math.max(0,(pct-75)/25));
+    $('moon').setAttribute('opacity', pct>=100?Math.max(.6,night):dusk*.35);
+    $('stars').setAttribute('opacity', pct>=100?Math.max(.5,night):dusk*.25);
+    $('clouds').setAttribute('opacity', 1-Math.max(dusk*.5,night*.8));
+    $('hazeC').setAttribute('stop-color', bot);
+    const evening = pct>=80;
+    document.querySelectorAll('.lampGlow').forEach(g=>g.setAttribute('opacity',evening?1:0));
+    document.querySelectorAll('.bulb').forEach(g=>g.setAttribute('fill',evening?'#FFE3A3':'#4B5563'));
+    const home=pct>=100 && wx>=HOME-0.5;
+    $('homeWin').setAttribute('fill', home?'#FFD58A':'#3A4150');
+    $('homeWin2').setAttribute('fill', home?'#FFC76B':'#3A4150');
+    $('homeGlow').setAttribute('opacity', home?1:0);
+    walkTo(pct>=100 ? HOME : (state==='break' ? 150 : DOOR), state==='idle');
+    // office windows: glassy by day, lit in the evening, switching off one by one after you leave
+    const lit=[...document.querySelectorAll('#windows rect')];
+    const offCount = pct>=100 ? Math.min(lit.length-4, Math.floor(lit.length*(.55+night*.4))) : 0;
+    lit.forEach((w,i)=>{
+      const k=(i*17)%lit.length; // stable pseudo-random order
+      if(!evening){ w.setAttribute('fill','#8FB3D6'); w.setAttribute('opacity', .22+((i*7)%5)*.05); }
+      else if(k<offCount){ w.setAttribute('fill','#1A212C'); w.setAttribute('opacity',1); }
+      else { w.setAttribute('fill', i%4?'#FFD58A':'#FFE7B0'); w.setAttribute('opacity',.9); }
+    });
+  }
+  function mood(pct, state, extra){
+    if(state==='idle') return ['पहले पंच तो करो, फिर बात करेंगे।','Add your clock-in to start the day.'];
+    if(state==='break' && pct<100) return ['चाय पर हो? घड़ी भी आराम कर रही है।','On a break. The clock is paused.'];
+    if(extra>30*60000) return ['चाँद निकल आया, घर पर कोई इंतज़ार कर रहा है।','You\'re well into overtime.'];
+    if(pct>=100) return ['छुट्टी! अब घर की ओर प्रस्थान।','Day complete. Time to head home.'];
+    if(pct>=95) return ['बस कुछ मिनट... बैग उठाने की प्रैक्टिस करो।','Almost there.'];
+    if(pct>=75) return ['सूरज ढल रहा है, सेव करते रहो।','The last stretch.'];
+    if(pct>=50) return ['आधा दिन पार, अब ढलान है।','Past the halfway mark.'];
+    if(pct>=25) return ['लय पकड़ ली है, लगे रहो।','Good pace so far.'];
+    return ['सुबह की चाय, और लंबा दिन बाकी है।','The day has just begun.'];
+  }
+
+  function render(){
+    const req=parseFloat(document.querySelector('input[name=dt]:checked').value)*3600000;
+    const r=compute();
+    if(r.error){ $('err').textContent=r.error; return; }
+    $('err').textContent = r.bad.length ? 'Couldn\'t read: '+r.bad.join(', ')+'. Use a format like 9:30 AM or 14:05.' : '';
+    const pct=r.worked/req*100, left=req-r.worked;
+    const state = !r.times.length ? 'idle' : (r.clockedIn ? 'in' : 'break');
+    $('sumWorked').textContent=hms(r.worked);
+    const onBreak = state==='break' ? r.now - r.times[r.times.length-1] : 0;
+    $('sumBreak').textContent=hms(r.breaks+onBreak);
+
+    const hrs=parseFloat(document.querySelector('input[name=dt]:checked').value);
+    if(state==='idle'){
+      $('sub').textContent='Add your first clock-in to see your summary.';
+      $('leftLabel').textContent='Remaining Time'; $('sumLeft').textContent='--h --m --s';
+      $('exitLabel').textContent='Estimated Departure'; $('sumExit').textContent='--:--:--';
+    } else if(left<=0){
+      $('sub').textContent='Congratulations! You\'ve completed your '+hrs+' hours.';
+      $('leftLabel').textContent='Extra Time'; $('sumLeft').textContent='+'+hms(-left);
+      $('exitLabel').textContent='Day Completed At'; $('sumExit').textContent=clk(crossTime(r,req)||r.now);
+    } else {
+      $('sub').textContent = state==='in' ? Math.floor(pct)+'% of your '+hrs+' hours done.' : 'On break for '+hms(r.now-r.times[r.times.length-1]).replace(/^00h /,'')+'. Clock in again to continue.';
+      $('leftLabel').textContent='Remaining Time'; $('sumLeft').textContent=hms(left);
+      $('exitLabel').textContent = state==='in' ? 'Estimated Departure' : 'Departure If Back Now';
+      $('sumExit').textContent=clk(new Date(r.now.getTime()+left));
+    }
+    const [c,s]=mood(pct,state,-left);
+    if($('caption').textContent!==c) $('caption').textContent=c;
+    $('subcap').textContent=s;
+    paintSky(state==='idle'?0:pct, state);
+  }
+
+  function save(){ store.set('co-entries',ta.value); store.set('co-type',document.querySelector('input[name=dt]:checked').value); }
+  ta.addEventListener('input',()=>{save();render();});
+  document.querySelectorAll('input[name=dt]').forEach(i=>i.addEventListener('change',()=>{save();render();}));
+  $('punchBtn').onclick=()=>{
+    const lines=ta.value.split('\n').map(l=>l.trim()).filter(Boolean);
+    if(lines.length && lines[lines.length-1].toUpperCase()==='MISSING') lines.pop();
+    lines.push(clk(new Date()).replace(/^0/,'')); ta.value=lines.join('\n'); save(); render();
+  };
+  $('clearBtn').onclick=()=>{ ta.value=''; save(); render(); ta.focus(); };
+  const saved=store.get('co-entries'); if(saved) ta.value=saved;
+  const t=store.get('co-type'); if(t){ const el=document.querySelector('input[name=dt][value="'+t+'"]'); if(el) el.checked=true; }
+  render(); setInterval(render,1000);
+})();
+</script>
+</body>
+</html>
